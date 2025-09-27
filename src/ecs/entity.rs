@@ -1,7 +1,7 @@
 use std::{
     any::TypeId,
     cell::RefCell,
-    collections::{hash_map::Entry, HashMap, VecDeque},
+    collections::{HashMap, VecDeque, hash_map::Entry},
 };
 
 use nonmax::NonMaxU16;
@@ -102,6 +102,7 @@ impl World {
             record.is_alive = false;
             let generation = (record.generation.get() + 1).rem_euclid(NonMaxU16::MAX.get());
             record.generation = NonMaxU16::new(generation).unwrap();
+            self.free_indices.push_front(entity.index);
         }
     }
 }
