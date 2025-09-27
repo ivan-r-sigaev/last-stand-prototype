@@ -56,9 +56,12 @@ impl<T> ComponetPool<T> {
         let Some(index) = self.index(entity) else {
             return false;
         };
-        self.index_lookup[entity.index().get() as usize] = None;
+        let swapped = self.entities().last().unwrap();
         self.values.swap_remove(index);
         self.entities.swap_remove(index);
+        self.index_lookup[swapped.index().get() as usize] =
+            Some(NonMaxU16::new(index as u16).unwrap());
+        self.index_lookup[entity.index().get() as usize] = None;
         true
     }
     /// Returns `true` if the supplied entity has the component `T` in this pool.
