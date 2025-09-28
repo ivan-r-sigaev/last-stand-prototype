@@ -14,13 +14,13 @@ mod iter;
 
 /// Stores the components of type `T` for each entity.
 #[derive(Debug, Clone)]
-pub struct ComponetPool<T> {
+pub struct ComponentPool<T> {
     values: Vec<T>,
     entities: Vec<Entity>,
     index_lookup: Box<[Option<NonMaxU16>]>,
 }
 
-impl<T> ComponetPool<T> {
+impl<T> ComponentPool<T> {
     /// Constructs a new component pool.
     pub fn new() -> Self {
         let values = Vec::new();
@@ -136,26 +136,26 @@ pub trait UntypedComponentPool: Any {
     fn shrink_to_fit(&mut self);
 }
 
-impl<T: Component> UntypedComponentPool for ComponetPool<T> {
+impl<T: Component> UntypedComponentPool for ComponentPool<T> {
     fn remove(&mut self, entity: Entity) {
-        ComponetPool::<T>::remove(self, entity)
+        ComponentPool::<T>::remove(self, entity)
     }
     fn try_remove(&mut self, entity: Entity) -> bool {
-        ComponetPool::<T>::try_remove(self, entity)
+        ComponentPool::<T>::try_remove(self, entity)
     }
     fn contains_entity(&self, entity: Entity) -> bool {
-        ComponetPool::<T>::contains_entity(self, entity)
+        ComponentPool::<T>::contains_entity(self, entity)
     }
     fn entities(&self) -> Entities<'_> {
-        ComponetPool::<T>::entities(self)
+        ComponentPool::<T>::entities(self)
     }
     fn reserve(&mut self, additional: usize) {
-        ComponetPool::<T>::reserve(self, additional)
+        ComponentPool::<T>::reserve(self, additional)
     }
     fn shrink_to(&mut self, min_capacity: usize) {
-        ComponetPool::<T>::shrink_to(self, min_capacity)
+        ComponentPool::<T>::shrink_to(self, min_capacity)
     }
     fn shrink_to_fit(&mut self) {
-        ComponetPool::<T>::shrink_to_fit(self)
+        ComponentPool::<T>::shrink_to_fit(self)
     }
 }
