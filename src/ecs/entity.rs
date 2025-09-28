@@ -1,7 +1,9 @@
 use std::{
-    any::TypeId,
-    cell::RefCell,
+    any::{Any, TypeId},
+    cell::{Ref, RefCell, RefMut},
     collections::{HashMap, VecDeque, hash_map::Entry},
+    marker::PhantomData,
+    ops::{Deref, DerefMut},
 };
 
 use nonmax::NonMaxU16;
@@ -58,9 +60,20 @@ impl World {
         };
         entry.insert(Box::new(RefCell::new(ComponentPool::<T>::new())));
     }
-    /// Returns the component pool for the specified type.
-    pub fn pool(&self, id: TypeId) -> Option<&RefCell<dyn UntypedComponentPool>> {
-        self.components.get(&id).map(|boxed| boxed.as_ref())
+    /// Returns the untyped component pool handle for the specified type.
+    pub fn get_untyped_pool_handle<T: Component>(&self) -> &RefCell<dyn UntypedComponentPool> {
+        self.components.get(&TypeId::of::<T>()).unwrap().as_ref()
+    }
+    /// Returns the reference to the component pool for the specified type.
+    pub fn borrow_pool<T: Component>(&self) -> ComponentPoolGuard<'_, T> {
+        ComponentPoolGuard(self.get_untyped_pool_handle::<T>().borrow(), PhantomData)
+    }
+    /// Returns the mutable reference to the component pool for the specified type.
+    pub fn borrow_pool_mut<T: Component>(&self) -> ComponentPoolGuardMut<'_, T> {
+        ComponentPoolGuardMut(
+            self.get_untyped_pool_handle::<T>().borrow_mut(),
+            PhantomData,
+        )
     }
     /// Constructs a new entity.
     ///
@@ -112,4 +125,30 @@ impl World {
 struct EntityRecord {
     is_alive: bool,
     generation: NonMaxU16,
+}
+
+pub struct ComponentPoolGuard<'a, T>(Ref<'a, dyn Any>, PhantomData<T>);
+
+impl<T: Component> Deref for ComponentPoolGuard<'_, T> {
+    type Target = ComponentPool<T>;
+
+    fn deref(&self) -> &Self::Target {
+        self.0.downcast_ref().unwrap()
+    }
+}
+
+pub struct ComponentPoolGuardMut<'a, T>(RefMut<'a, dyn Any>, PhantomData<T>);
+
+impl<T: Component> Deref for ComponentPoolGuardMut<'_, T> {
+    type Target = ComponentPool<T>;
+
+    fn deref(&self) -> &Self::Target {
+        self.0.downcast_ref().unwrap()
+    }
+}
+
+impl<T: Component> DerefMut for ComponentPoolGuardMut<'_, T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        self.0.downcast_mut().unwrap()
+    }
 }
