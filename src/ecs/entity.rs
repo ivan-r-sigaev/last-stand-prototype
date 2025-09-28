@@ -6,7 +6,7 @@ use std::{
 
 use nonmax::NonMaxU16;
 
-use crate::ecs::component::{Component, ComponetPool, UntypedComponentPool};
+use crate::ecs::component::{Component, ComponentPool, UntypedComponentPool};
 
 /// ECS entity ID.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -40,7 +40,7 @@ impl World {
     /// Creates a new entity registry.
     pub fn new() -> Self {
         let components = HashMap::new();
-        let record_lookup = vec![EntityRecord::default(); Entity::INDEX_MAX].into_boxed_slice();
+        let record_lookup = vec![EntityRecord::default(); Entity::INDEX_MAX + 1].into_boxed_slice();
         let free_indices = VecDeque::from_iter(
             (0..=Entity::INDEX_MAX).map(|index| NonMaxU16::new(index as u16).unwrap()),
         );
@@ -56,7 +56,7 @@ impl World {
         let Entry::Vacant(entry) = self.components.entry(id) else {
             return;
         };
-        entry.insert(Box::new(RefCell::new(ComponetPool::<T>::new())));
+        entry.insert(Box::new(RefCell::new(ComponentPool::<T>::new())));
     }
     /// Returns the component pool for the specified type.
     pub fn pool(&self, id: TypeId) -> Option<&RefCell<dyn UntypedComponentPool>> {

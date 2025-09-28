@@ -4,7 +4,7 @@ use macroquad::math::{Circle, Rect, Vec2};
 use nonmax::NonMaxU16;
 
 use crate::ecs::{
-    component::{Component, ComponetPool},
+    component::{Component, ComponentPool},
     entity::Entity,
 };
 
@@ -21,7 +21,7 @@ impl CollisionMask {
 }
 
 /// A collider component.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct Collider {
     /// Shape and position of the collider.
     pub shape: Circle,
@@ -71,7 +71,7 @@ impl CollisionGrid {
         &self.entities[range]
     }
     /// Rebuilds the collision grid with the new parameters.
-    pub fn update(&mut self, colliders: &ComponetPool<Collider>, params: CollisionGridParams) {
+    pub fn update(&mut self, colliders: &ComponentPool<Collider>, params: CollisionGridParams) {
         self.params = params;
         let cell_count = params.resolution.0.strict_mul(params.resolution.1);
 
@@ -127,7 +127,7 @@ impl CollisionGrid {
     /// Panics if the supplied entity does not have a [`Collider`] component.
     pub fn any_collision(
         &self,
-        colliders: &ComponetPool<Collider>,
+        colliders: &ComponentPool<Collider>,
         entity: Entity,
     ) -> Option<Entity> {
         let collider = colliders
