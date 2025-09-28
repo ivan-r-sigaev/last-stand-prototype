@@ -3,7 +3,7 @@ use macroquad::{
     color::{BLACK, Color, WHITE},
     math::{Rect, Vec2},
     texture::{DrawTextureParams, RenderTarget, Texture2D, draw_texture_ex, render_target},
-    window::{clear_background, next_frame, screen_height, screen_width},
+    window::{clear_background, screen_height, screen_width},
 };
 
 use crate::{
@@ -37,7 +37,7 @@ impl Screen {
         Self { vdisplay, vw, vh }
     }
     /// Renders the new frame onto the virtual screen and letterboxes the virtual screen onto the real screen.
-    pub async fn render_sprites(
+    pub fn render_sprites(
         &self,
         target: Vec2,
         zoom: Vec2,
@@ -83,7 +83,5 @@ impl Screen {
                 ..Default::default()
             },
         );
-
-        next_frame().await
     }
 }

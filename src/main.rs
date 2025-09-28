@@ -8,6 +8,7 @@ use macroquad::{
     color::Color,
     math::{Circle, Vec2},
     texture::{load_texture, set_default_filter_mode},
+    window::next_frame,
 };
 
 use crate::{
@@ -62,14 +63,13 @@ async fn main() {
     );
 
     loop {
-        screen
-            .render_sprites(
-                Vec2::ZERO,
-                Vec2::ONE,
-                Color::from_hex(0xffb30f),
-                sprites,
-                colliders,
-            )
-            .await;
+        screen.render_sprites(
+            Vec2::ZERO,
+            Vec2::ONE,
+            Color::from_hex(0xffb30f),
+            sprites,
+            colliders,
+        );
+        next_frame().await
     }
 }
