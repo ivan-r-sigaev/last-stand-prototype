@@ -40,7 +40,7 @@ impl World {
     /// Creates a new entity registry.
     pub fn new() -> Self {
         let components = HashMap::new();
-        let record_lookup = vec![EntityRecord::default(); Entity::INDEX_MAX].into_boxed_slice();
+        let record_lookup = vec![EntityRecord::default(); Entity::INDEX_MAX + 1].into_boxed_slice();
         let free_indices = VecDeque::from_iter(
             (0..=Entity::INDEX_MAX).map(|index| NonMaxU16::new(index as u16).unwrap()),
         );

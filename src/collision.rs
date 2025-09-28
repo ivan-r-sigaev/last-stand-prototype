@@ -21,7 +21,7 @@ impl CollisionMask {
 }
 
 /// A collider component.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct Collider {
     /// Shape and position of the collider.
     pub shape: Circle,

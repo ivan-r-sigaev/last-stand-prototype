@@ -25,7 +25,7 @@ impl<T> ComponentPool<T> {
     pub fn new() -> Self {
         let values = Vec::new();
         let entities = Vec::new();
-        let index_lookup = vec![None; Entity::INDEX_MAX].into_boxed_slice();
+        let index_lookup = vec![None; Entity::INDEX_MAX + 1].into_boxed_slice();
         Self {
             values,
             entities,
