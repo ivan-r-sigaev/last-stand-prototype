@@ -17,6 +17,8 @@ use macroquad::{
 };
 use std::ops::Range;
 
+pub mod ui;
+
 /// A component to render the texture of the entity.
 #[derive(Debug, Clone)]
 pub struct Sprite {
