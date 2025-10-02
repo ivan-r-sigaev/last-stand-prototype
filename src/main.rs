@@ -9,9 +9,17 @@ use macroquad::{
 use crate::{
     ecs::entity::World,
     game::{
+        bullet::Bullet,
         collision::{Collider, CollisionGrid, CollisionMask, Shape},
+        enemy::Enemy,
+        hp::Hp,
         movement::MapConstraints,
-        player::{Player, attributes::Attrs, exp::Exp},
+        player::{
+            Player,
+            attributes::{Attr, Attrs},
+            exp::Exp,
+            weapons::{DamageModifier, Weapon, WeaponBase, weapon_offset},
+        },
         rendering::{Screen, Sprite, SpriteSource},
         transform::Transform,
     },
@@ -27,6 +35,9 @@ async fn setup_context() -> Context {
     world.register_type::<Transform>();
     world.register_type::<Collider>();
     world.register_type::<Sprite>();
+    world.register_type::<Hp>();
+    world.register_type::<Enemy>();
+    world.register_type::<Bullet>();
     let mut screen = Screen::new(1024, 768);
     let collisions = CollisionGrid::new();
 
@@ -63,11 +74,62 @@ async fn setup_context() -> Context {
         );
         screen.add_sprite(ted, &sprites);
     }
+    let gun_texture = load_texture("assets/Nailgun.png").await.unwrap();
     let player = Player {
         entity: ted,
         attrs: Attrs::new(),
         exp: Exp(0),
-        weapons_num: 1,
+        weapons: {
+            let mut res = Vec::new();
+            for i in 0..4 {
+                let entity = world.create_entity();
+                {
+                    let offset = weapon_offset(i, 4);
+                    let mut sprites = world.borrow_pool_mut::<Sprite>();
+                    let mut transforms = world.borrow_pool_mut::<Transform>();
+                    let mut colliders = world.borrow_pool_mut::<Collider>();
+                    sprites.insert(
+                        entity,
+                        Sprite {
+                            texture: gun_texture.clone(),
+                            source: SpriteSource::Collider,
+                            is_visible: true,
+                            layer: 2,
+                        },
+                    );
+                    transforms.insert(
+                        entity,
+                        Transform {
+                            position: offset,
+                            rotation: offset.to_angle() - std::f32::consts::PI,
+                        },
+                    );
+                    colliders.insert(
+                        entity,
+                        Collider {
+                            shape: Shape::Circle { radius: 15. },
+                            monitorable: CollisionMask(0),
+                            monitoring: CollisionMask(0),
+                        },
+                    );
+                    screen.add_sprite(entity, &sprites);
+                }
+                let default_weapon = Weapon {
+                    entity,
+                    base: WeaponBase {
+                        bonus_attrs: Attrs::new(),
+                        crit_mult: 2.,
+                        damage_mod: DamageModifier {
+                            attr: Attr::Damage,
+                            multiplier: 1.,
+                        },
+                    },
+                    next_shot_time: 0.,
+                };
+                res.push(default_weapon);
+            }
+            res
+        },
     };
     let map = world.create_entity();
     let rect = Rect::new(-600., -600., 1200., 1200.);

@@ -3,7 +3,7 @@ use crate::{
     game::player::{
         attributes::{Attr, Attrs},
         exp::Exp,
-        weapons::WeaponBase,
+        weapons::{Weapon, WeaponBase},
     },
 };
 
@@ -15,7 +15,7 @@ pub struct Player {
     pub entity: Entity,
     pub attrs: Attrs,
     pub exp: Exp,
-    pub weapons_num: u32,
+    pub weapons: Vec<Weapon>,
 }
 
 impl Player {

@@ -163,7 +163,9 @@ impl CollisionGrid {
             .filter(move |entity| {
                 let other_collider = colliders.get(*entity).unwrap();
                 let other_transform = transforms.get(*entity).unwrap();
-                if !collider.monitoring.overlaps(other_collider.monitorable) {
+                if !collider.monitoring.overlaps(other_collider.monitorable)
+                    && !other_collider.monitoring.overlaps(collider.monitorable)
+                {
                     return false;
                 }
                 let other_circle = match collider.shape {
