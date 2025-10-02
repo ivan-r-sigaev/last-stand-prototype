@@ -20,35 +20,51 @@ mod ecs;
 #[allow(unused)]
 mod game;
 
-async fn setup_world(world: &mut World) {
+async fn setup_context() -> Context {
+    let mut world = World::new();
+    world.register_type::<Transform>();
+    world.register_type::<Collider>();
+    world.register_type::<Sprite>();
+    let mut screen = Screen::new(1024, 768);
+    let collisions = CollisionGrid::new();
+
     set_default_filter_mode(macroquad::texture::FilterMode::Linear);
     let ted_texture = load_texture("assets/Ted.png").await.unwrap();
     let ted = world.create_entity();
-    let mut transforms = world.borrow_pool_mut::<Transform>();
-    let mut colliders = world.borrow_pool_mut::<Collider>();
-    let mut sprites = world.borrow_pool_mut::<Sprite>();
-    transforms.insert(
-        ted,
-        Transform {
-            position: Vec2::ZERO,
-            rotation: 0.,
-        },
-    );
-    colliders.insert(
-        ted,
-        Collider {
-            shape: Shape::Circle { radius: 50. },
-            monitoring: CollisionMask(0),
-            monitorable: CollisionMask(0),
-        },
-    );
-    sprites.insert(
-        ted,
-        Sprite {
-            texture: ted_texture,
-            is_visible: true,
-        },
-    );
+    {
+        let mut transforms = world.borrow_pool_mut::<Transform>();
+        let mut colliders = world.borrow_pool_mut::<Collider>();
+        let mut sprites = world.borrow_pool_mut::<Sprite>();
+        transforms.insert(
+            ted,
+            Transform {
+                position: Vec2::ZERO,
+                rotation: 0.,
+            },
+        );
+        colliders.insert(
+            ted,
+            Collider {
+                shape: Shape::Circle { radius: 50. },
+                monitoring: CollisionMask(0),
+                monitorable: CollisionMask(0),
+            },
+        );
+        sprites.insert(
+            ted,
+            Sprite {
+                texture: ted_texture,
+                is_visible: true,
+                layer: 1,
+            },
+        );
+        screen.add_sprite(ted, &sprites);
+    }
+    Context {
+        world,
+        screen,
+        collisions,
+    }
 }
 
 struct Context {
@@ -79,17 +95,7 @@ const FIXED_STEPS_MAX: u32 = 4;
 
 #[macroquad::main("Last Stand")]
 async fn main() {
-    let mut world = World::new();
-    world.register_type::<Transform>();
-    world.register_type::<Collider>();
-    world.register_type::<Sprite>();
-    setup_world(&mut world).await;
-
-    let mut context = Context {
-        world,
-        screen: Screen::new(1024, 768),
-        collisions: CollisionGrid::new(),
-    };
+    let mut context = setup_context().await;
     let mut fixed_time = 0.;
 
     loop {
