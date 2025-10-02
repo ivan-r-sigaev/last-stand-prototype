@@ -31,7 +31,7 @@ async fn setup_world(world: &mut World) {
         ted,
         Transform {
             position: Vec2::ZERO,
-            rotation: 0.,  // 0.5 * std::f32::consts::PI
+            rotation: 0.,
         },
     );
     colliders.insert(
