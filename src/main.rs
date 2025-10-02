@@ -46,6 +46,7 @@ async fn setup_world(world: &mut World) {
         ted,
         Sprite {
             texture: ted_texture,
+            is_visible: true,
         },
     );
 }

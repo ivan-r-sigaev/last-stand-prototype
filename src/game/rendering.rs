@@ -19,6 +19,7 @@ use crate::{
 pub struct Sprite {
     /// The texture of the sprite.
     pub texture: Texture2D,
+    pub is_visible: bool,
 }
 
 impl Component for Sprite {}
@@ -59,6 +60,9 @@ impl Screen {
         set_camera(&cam);
         clear_background(background);
         for (entity, sprite) in sprites.iter() {
+            if !sprite.is_visible {
+                continue;
+            }
             let collider = colliders
                 .get(entity)
                 .expect("All entities with sprites must have colliders!");
