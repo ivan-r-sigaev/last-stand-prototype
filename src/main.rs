@@ -11,7 +11,7 @@ use crate::{
     game::{
         collision::{Collider, CollisionGrid, CollisionMask, Shape},
         movement::MapConstraints,
-        player::{Player, attributes::Attrs},
+        player::{Player, attributes::Attrs, exp::Exp},
         rendering::{Screen, Sprite, SpriteSource},
         transform::Transform,
     },
@@ -66,6 +66,7 @@ async fn setup_context() -> Context {
     let player = Player {
         entity: ted,
         attrs: Attrs::new(),
+        exp: Exp(0),
         weapons_num: 1,
     };
     let map = world.create_entity();

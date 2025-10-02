@@ -2,16 +2,19 @@ use crate::{
     ecs::entity::Entity,
     game::player::{
         attributes::{Attr, Attrs},
+        exp::Exp,
         weapons::WeaponBase,
     },
 };
 
 pub mod attributes;
+pub mod exp;
 pub mod weapons;
 
 pub struct Player {
     pub entity: Entity,
     pub attrs: Attrs,
+    pub exp: Exp,
     pub weapons_num: u32,
 }
 
