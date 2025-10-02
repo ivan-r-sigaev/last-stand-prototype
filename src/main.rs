@@ -1,39 +1,45 @@
 use macroquad::{
     color::Color,
-    math::{Circle, Vec2},
+    math::Vec2,
     texture::{load_texture, set_default_filter_mode},
     time::get_frame_time,
     window::next_frame,
 };
 
 use crate::{
-    collision::{Collider, CollisionGrid},
     ecs::entity::World,
-    rendering::{Screen, Sprite},
+    game::{
+        collision::{Collider, CollisionGrid, CollisionMask, Shape},
+        rendering::{Screen, Sprite},
+        transform::Transform,
+    },
 };
 
 #[allow(unused)]
-mod collision;
-#[allow(unused)]
 mod ecs;
 #[allow(unused)]
-mod rendering;
+mod game;
 
 async fn setup_world(world: &mut World) {
     set_default_filter_mode(macroquad::texture::FilterMode::Linear);
     let ted_texture = load_texture("assets/Ted.png").await.unwrap();
     let ted = world.create_entity();
+    let mut transforms = world.borrow_pool_mut::<Transform>();
     let mut colliders = world.borrow_pool_mut::<Collider>();
     let mut sprites = world.borrow_pool_mut::<Sprite>();
+    transforms.insert(
+        ted,
+        Transform {
+            position: Vec2::ZERO,
+            rotation: 0.,  // 0.5 * std::f32::consts::PI
+        },
+    );
     colliders.insert(
         ted,
         Collider {
-            shape: Circle {
-                x: 0.,
-                y: 0.,
-                r: 50.,
-            },
-            ..Default::default()
+            shape: Shape::Circle { radius: 50. },
+            monitoring: CollisionMask(0),
+            monitorable: CollisionMask(0),
         },
     );
     sprites.insert(
@@ -61,6 +67,7 @@ impl Context {
             Vec2::ONE,
             Color::from_hex(0xffb30f),
             &self.world.borrow_pool::<Sprite>(),
+            &self.world.borrow_pool::<Transform>(),
             &self.world.borrow_pool::<Collider>(),
         );
     }
@@ -72,6 +79,7 @@ const FIXED_STEPS_MAX: u32 = 4;
 #[macroquad::main("Last Stand")]
 async fn main() {
     let mut world = World::new();
+    world.register_type::<Transform>();
     world.register_type::<Collider>();
     world.register_type::<Sprite>();
     setup_world(&mut world).await;
