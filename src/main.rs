@@ -10,7 +10,7 @@ use crate::{
     ecs::entity::World,
     game::{
         collision::{Collider, CollisionGrid, CollisionMask, Shape},
-        rendering::{Screen, Sprite},
+        rendering::{Screen, Sprite, SpriteSource},
         transform::Transform,
     },
 };
@@ -53,6 +53,7 @@ async fn setup_context() -> Context {
         sprites.insert(
             ted,
             Sprite {
+                source: SpriteSource::Collider,
                 texture: ted_texture,
                 is_visible: true,
                 layer: 1,
