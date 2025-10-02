@@ -7,8 +7,11 @@ use macroquad::{
 };
 
 use crate::{
-    collision::Collider,
     ecs::component::{Component, ComponentPool},
+    game::{
+        collision::{Collider, Shape},
+        transform::Transform,
+    },
 };
 
 /// A component to render the texture of the entity.
@@ -43,6 +46,7 @@ impl Screen {
         zoom: Vec2,
         background: Color,
         sprites: &ComponentPool<Sprite>,
+        transforms: &ComponentPool<Transform>,
         colliders: &ComponentPool<Collider>,
     ) {
         let cam = {
@@ -58,13 +62,16 @@ impl Screen {
             let collider = colliders
                 .get(entity)
                 .expect("All entities with sprites must have colliders!");
+            let transform = transforms.get(entity).unwrap();
+            let Shape::Circle { radius } = collider.shape;
             draw_texture_ex(
                 &sprite.texture,
-                collider.shape.x - collider.shape.r,
-                collider.shape.y - collider.shape.r,
+                transform.position.x - radius,
+                transform.position.y - radius,
                 WHITE,
                 DrawTextureParams {
-                    dest_size: Some(Vec2::splat(collider.shape.r * 2.)),
+                    dest_size: Some(Vec2::splat(radius * 2.)),
+                    rotation: transform.rotation,
                     ..Default::default()
                 },
             );
