@@ -17,13 +17,18 @@ use macroquad::{
 };
 use std::ops::Range;
 
-pub mod ui;
+#[derive(Debug, Clone, Copy)]
+pub enum SpriteSource {
+    Collider,
+    Ui(Rect),
+}
 
 /// A component to render the texture of the entity.
 #[derive(Debug, Clone)]
 pub struct Sprite {
     /// The texture of the sprite.
     pub texture: Texture2D,
+    pub source: SpriteSource,
     pub is_visible: bool,
     pub layer: u8,
 }
@@ -95,22 +100,38 @@ impl Screen {
                 if !sprite.is_visible {
                     continue;
                 }
-                let collider = colliders
-                    .get(entity)
-                    .expect("All entities with sprites must have colliders!");
-                let transform = transforms.get(entity).unwrap();
-                let Shape::Circle { radius } = collider.shape;
-                draw_texture_ex(
-                    &sprite.texture,
-                    transform.position.x - radius,
-                    transform.position.y - radius,
-                    WHITE,
-                    DrawTextureParams {
-                        dest_size: Some(Vec2::splat(radius * 2.)),
-                        rotation: transform.rotation,
-                        ..Default::default()
-                    },
-                );
+                match sprite.source {
+                    SpriteSource::Collider => {
+                        let collider = colliders
+                            .get(entity)
+                            .expect("All entities with sprites must have colliders!");
+                        let transform = transforms.get(entity).unwrap();
+                        let Shape::Circle { radius } = collider.shape;
+                        draw_texture_ex(
+                            &sprite.texture,
+                            transform.position.x - radius,
+                            transform.position.y - radius,
+                            WHITE,
+                            DrawTextureParams {
+                                dest_size: Some(Vec2::splat(radius * 2.)),
+                                rotation: transform.rotation,
+                                ..Default::default()
+                            },
+                        );
+                    }
+                    SpriteSource::Ui(rect) => {
+                        draw_texture_ex(
+                            &sprite.texture,
+                            rect.point().x,
+                            rect.point().y,
+                            WHITE,
+                            DrawTextureParams {
+                                dest_size: Some(rect.size()),
+                                ..Default::default()
+                            },
+                        );
+                    }
+                }
             }
         }
         let scale = f32::min(screen_width() / self.vw, screen_height() / self.vh);
