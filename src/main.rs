@@ -1,6 +1,6 @@
 use macroquad::{
     color::Color,
-    math::Vec2,
+    math::{Rect, Vec2},
     texture::{load_texture, set_default_filter_mode},
     time::get_frame_time,
     window::next_frame,
@@ -10,6 +10,8 @@ use crate::{
     ecs::entity::World,
     game::{
         collision::{Collider, CollisionGrid, CollisionMask, Shape},
+        movement::MapConstraints,
+        player::{Player, attributes::Attrs},
         rendering::{Screen, Sprite, SpriteSource},
         transform::Transform,
     },
@@ -45,7 +47,7 @@ async fn setup_context() -> Context {
         colliders.insert(
             ted,
             Collider {
-                shape: Shape::Circle { radius: 50. },
+                shape: Shape::Circle { radius: 30. },
                 monitoring: CollisionMask(0),
                 monitorable: CollisionMask(0),
             },
@@ -61,23 +63,53 @@ async fn setup_context() -> Context {
         );
         screen.add_sprite(ted, &sprites);
     }
+    let player = Player {
+        entity: ted,
+        attrs: Attrs::new(),
+        weapons_num: 1,
+    };
+    let map = world.create_entity();
+    let rect = Rect::new(-600., -600., 1200., 1200.);
+    let map_constraints = MapConstraints {
+        max: rect.point() + rect.size(),
+        min: rect.point(),
+    };
+    {
+        let mut sprites = world.borrow_pool_mut::<Sprite>();
+        sprites.insert(
+            map,
+            Sprite {
+                texture: load_texture("assets/BG.png").await.unwrap(),
+                source: SpriteSource::Ui(rect),
+                is_visible: true,
+                layer: 0,
+            },
+        );
+        screen.add_sprite(map, &sprites);
+    }
     Context {
         world,
         screen,
         collisions,
+        player,
+        map_constraints,
     }
 }
 
 struct Context {
     world: World,
     screen: Screen,
+    player: Player,
     collisions: CollisionGrid,
+    map_constraints: MapConstraints,
 }
 
 impl Context {
     fn fixed_update(&mut self) {
         _ = self;
         _ = self.collisions;
+        _ = self.player;
+        _ = self.map_constraints;
     }
     fn update(&mut self) {
         self.screen.render_sprites(
