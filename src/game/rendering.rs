@@ -12,10 +12,10 @@ use macroquad::{
     camera::{Camera2D, set_camera, set_default_camera},
     color::{BLACK, Color, WHITE},
     math::{Rect, Vec2},
+    text::draw_text,
     texture::{DrawTextureParams, RenderTarget, Texture2D, draw_texture_ex, render_target},
     window::{clear_background, screen_height, screen_width},
 };
-use std::ops::Range;
 
 #[derive(Debug, Clone, Copy)]
 pub enum SpriteSource {
@@ -75,6 +75,7 @@ impl Screen {
             .expect("Entity was not added in the first place!");
         layer.swap_remove(index);
     }
+    #[allow(clippy::too_many_arguments)]
     /// Renders the new frame onto the virtual screen and letterboxes the virtual screen onto the real screen.
     pub fn render_sprites(
         &self,
@@ -84,10 +85,12 @@ impl Screen {
         sprites: &ComponentPool<Sprite>,
         transforms: &ComponentPool<Transform>,
         colliders: &ComponentPool<Collider>,
+        level: u32,
+        hp: u32,
     ) {
         let cam = {
             let mut res = Camera2D::from_display_rect(Rect::new(0., 0., self.vw, self.vh));
-            res.zoom * zoom;
+            res.zoom *= zoom;
             res.target = target;
             res.render_target = Some(self.vdisplay.clone());
             res
@@ -134,6 +137,7 @@ impl Screen {
                 }
             }
         }
+        draw_text(&format!("level: {level}\nhp: {hp}"), 0., 0., 32., WHITE);
         let scale = f32::min(screen_width() / self.vw, screen_height() / self.vh);
         set_default_camera();
         clear_background(BLACK);
