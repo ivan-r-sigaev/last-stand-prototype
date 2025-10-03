@@ -3,13 +3,7 @@ use macroquad::math::{Rect, Vec2};
 use crate::{
     Context, FIXED_DELTA,
     ecs::component::Component,
-    game::{
-        collision::{Collider, CollisionGridParams},
-        enemy::Enemy,
-        hp::Hp,
-        rendering::Sprite,
-        transform::Transform,
-    },
+    game::{collision::Collider, enemy::Enemy, hp::Hp, rendering::Sprite, transform::Transform},
 };
 
 pub struct Bullet {
@@ -19,16 +13,15 @@ pub struct Bullet {
 impl Component for Bullet {}
 
 pub fn move_bullets(context: &mut Context) {
-    const BULLET_MOVE_SPEED: f32 = 50.;
+    const BULLET_MOVE_SPEED: f32 = 400.;
     let bullets = context.world.borrow_pool::<Bullet>();
     let mut transforms = context.world.borrow_pool_mut::<Transform>();
     for entity in bullets.entities() {
-        let mut transform = transforms.get_mut(entity).unwrap();
+        let transform = transforms.get_mut(entity).unwrap();
         let delta = Vec2::from_angle(transform.rotation) * BULLET_MOVE_SPEED * FIXED_DELTA;
         transform.position += delta;
     }
 }
-
 pub fn test_bullet_collision(context: &mut Context) {
     let mut to_remove = Vec::new();
     {
@@ -40,18 +33,10 @@ pub fn test_bullet_collision(context: &mut Context) {
         let mut hps = context.world.borrow_pool_mut::<Hp>();
         let c = &context.map_constraints;
         let crect = Rect::new(c.min.x, c.min.y, (c.max - c.min).x, (c.max - c.min).y);
-        context.collisions.update(
-            &transforms,
-            &colliders,
-            CollisionGridParams {
-                bounding_rect: crect,
-                resolution: (20, 20),
-            },
-        );
         for (entity, bullet) in bullets.iter() {
             let pos = transforms.get(entity).unwrap().position;
             let mut is_removed = false;
-            if crect.contains(pos) {
+            if !crect.contains(pos) {
                 is_removed = true;
                 context.screen.remove_sprite(entity, &sprites);
                 to_remove.push(entity);
@@ -59,12 +44,12 @@ pub fn test_bullet_collision(context: &mut Context) {
             let Some(other_entity) = context
                 .collisions
                 .collisions(&transforms, &colliders, entity)
-                .next()
+                .find(|&e| enemies.contains_entity(e))
             else {
                 continue;
             };
-            let hp = hps.get_mut(entity).unwrap();
-            hp.0.saturating_sub(bullet.damage);
+            let hp = hps.get_mut(other_entity).unwrap();
+            hp.0 = hp.0.saturating_sub(bullet.damage);
             if !is_removed {
                 context.screen.remove_sprite(entity, &sprites);
                 to_remove.push(entity);

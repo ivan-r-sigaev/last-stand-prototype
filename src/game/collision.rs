@@ -1,7 +1,6 @@
-use std::{collections::VecDeque, ops::Range};
+use std::ops::Range;
 
 use macroquad::math::{Circle, Rect, Vec2};
-use nonmax::NonMaxU16;
 
 use crate::{
     ecs::{
@@ -203,9 +202,10 @@ impl CollisionGrid {
             self.params.resolution.0 as f32,
             self.params.resolution.1 as f32,
         );
+        let unit = self.params.bounding_rect.size() / res;
         let origin = self.params.bounding_rect.point();
-        let local_min = ((min - origin) / res).max(Vec2::ZERO).floor();
-        let local_max = ((max - origin) / res).min(res).ceil();
+        let local_min = ((min - origin) / unit).floor().max(Vec2::ZERO);
+        let local_max = ((max - origin) / unit).ceil().min(res);
         let range_x = Range {
             start: local_min.x as usize,
             end: local_max.x as usize,
