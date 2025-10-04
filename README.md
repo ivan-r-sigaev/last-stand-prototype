@@ -1,5 +1,5 @@
 # Last Stand \[PROTOTYPE\]
-[![Build Status](https://github.com/ivan-r-sigaev/last_stand_prototype/actions/workflows/rust.yml/badge.svg)](https://github.com/ivan-r-sigaev/last_stand_prototype/actions)
+[![Build Status](https://github.com/ivan-r-sigaev/last-stand-prototype/actions/workflows/rust.yml/badge.svg)](https://github.com/ivan-r-sigaev/last-stand-prototype/actions)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 This is my attempt to create a single-file web game as a part of a learning project.
