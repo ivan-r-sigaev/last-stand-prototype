@@ -2,7 +2,8 @@ use macroquad::{
     color::Color,
     input::{KeyCode, is_key_down, is_quit_requested},
     math::{Rect, Vec2},
-    texture::{Texture2D, load_texture, set_default_filter_mode},
+    prelude::ImageFormat,
+    texture::{Texture2D, build_textures_atlas, set_default_filter_mode},
     time::get_frame_time,
     window::next_frame,
 };
@@ -32,6 +33,12 @@ mod ecs;
 #[allow(unused)]
 mod game;
 
+const ASSET_BAKED_BG_BYTES: &[u8] = include_bytes!("../assets/BG.png");
+const ASSET_BAKED_ENEMY_BYTES: &[u8] = include_bytes!("../assets/Destructoid.png");
+const ASSET_BAKED_GUN_BYTES: &[u8] = include_bytes!("../assets/Nailgun.png");
+const ASSET_BAKED_BULLET_BYTES: &[u8] = include_bytes!("../assets/NailgunBullet.png");
+const ASSET_BAKED_PLAYER_BYTES: &[u8] = include_bytes!("../assets/Ted.png");
+
 async fn setup_context() -> Context {
     let mut world = World::new();
     world.register_type::<Transform>();
@@ -44,7 +51,8 @@ async fn setup_context() -> Context {
     let collisions = CollisionGrid::new();
 
     set_default_filter_mode(macroquad::texture::FilterMode::Linear);
-    let ted_texture = load_texture("assets/Ted.png").await.unwrap();
+    let ted_texture =
+        Texture2D::from_file_with_format(ASSET_BAKED_PLAYER_BYTES, Some(ImageFormat::Png));
     let ted = world.create_entity();
     {
         let mut transforms = world.borrow_pool_mut::<Transform>();
@@ -78,9 +86,12 @@ async fn setup_context() -> Context {
         screen.add_sprite(ted, &sprites);
         hps.insert(ted, Hp(10));
     }
-    let bullet_texture = load_texture("assets/NailgunBullet.png").await.unwrap();
-    let enemy_texture = load_texture("assets/Destructoid.png").await.unwrap();
-    let _gun_texture = load_texture("assets/Nailgun.png").await.unwrap();
+    let bullet_texture =
+        Texture2D::from_file_with_format(ASSET_BAKED_BULLET_BYTES, Some(ImageFormat::Png));
+    let enemy_texture =
+        Texture2D::from_file_with_format(ASSET_BAKED_ENEMY_BYTES, Some(ImageFormat::Png));
+    let gun_texture =
+        Texture2D::from_file_with_format(ASSET_BAKED_GUN_BYTES, Some(ImageFormat::Png));
     let player = Player {
         entity: ted,
         attrs: Attrs::new(),
@@ -98,7 +109,7 @@ async fn setup_context() -> Context {
                     sprites.insert(
                         entity,
                         Sprite {
-                            texture: _gun_texture.weak_clone(),
+                            texture: gun_texture.weak_clone(),
                             source: SpriteSource::Collider,
                             is_visible: true,
                             layer: 2,
@@ -149,7 +160,10 @@ async fn setup_context() -> Context {
         sprites.insert(
             map,
             Sprite {
-                texture: load_texture("assets/BG.png").await.unwrap(),
+                texture: Texture2D::from_file_with_format(
+                    ASSET_BAKED_BG_BYTES,
+                    Some(ImageFormat::Png),
+                ),
                 source: SpriteSource::Ui(rect),
                 is_visible: true,
                 layer: 0,
@@ -160,7 +174,7 @@ async fn setup_context() -> Context {
     let director = Some(Director {
         next_batch_time: 0.,
     });
-    // build_textures_atlas();
+    build_textures_atlas();
     Context {
         world,
         screen,
@@ -170,7 +184,7 @@ async fn setup_context() -> Context {
         director,
         bullet_texture,
         enemy_texture,
-        _gun_texture,
+        _gun_texture: gun_texture,
     }
 }
 
