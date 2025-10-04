@@ -12,7 +12,7 @@ The goal of the project was to create a game that can can be distributed as a si
 - I baked assets into the executable with the [`include_bytes`][6] macro.
 - I created a [script](./tools/build-wasm/build.py) to bundle the `.wasm` file into the [macroquad's HTML template][7] (*).
 
-\* - This is needed to bypass the [CORS][8] when running the game without an http server.
+\* - This is needed to bypass the [CORS][8] when running the game without an http server (obviously, also because the game needs to be single-file).
 
 ## How to build from source
 To build the project from source code you need to have the standard [rust toolchain](https://rust-lang.org/tools/install/) installed.
