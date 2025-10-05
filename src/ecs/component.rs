@@ -10,7 +10,7 @@ use crate::ecs::{
 /// Marker trait for components.
 pub trait Component: 'static {}
 
-mod iter;
+pub mod iter;
 
 /// Stores the components of type `T` for each entity.
 #[derive(Debug, Clone)]
