@@ -20,6 +20,7 @@ To build the project from source code you need to have the standard [rust toolch
 Clone the repository as follows or download and unpack the ZIP with the source code.
 ```bash
 git clone https://github.com/ivan-r-sigaev/last-stand-prototype.git
+cd last-stand-prototype
 ```
 
 ### Web assembly
@@ -29,13 +30,13 @@ rustup target add wasm32-unknown-unknown
 ```
 Run the python build script.
 ```bash
-python3 ./last-stand-prototype/tools/build-wasm/build.py
+cd tools/build-wasm
+python3 ./build.py
 ```
 The generated HTML file will be at `last-stand-prototype/target/last_stand.html`.
 ### Other targets
 Run the [`cargo build`](https://doc.rust-lang.org/cargo/commands/cargo-build.html) normally.
 ```bash
-cd last-stand-prototype
 cargo build --release 
 ```
 
