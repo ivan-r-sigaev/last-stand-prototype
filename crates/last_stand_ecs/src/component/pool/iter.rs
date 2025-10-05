@@ -1,4 +1,4 @@
-use crate::world::Entity;
+use crate::entity::registry::Entity;
 
 #[derive(Debug, Clone)]
 pub struct Values<'a, T>(pub(super) std::slice::Iter<'a, T>);

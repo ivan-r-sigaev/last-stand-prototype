@@ -5,7 +5,7 @@ use crate::{
         Component,
         pool::{ComponentPool, iter::Entities},
     },
-    world::Entity,
+    entity::registry::Entity,
 };
 
 /// Trait that erases the `T` from the component pool.

@@ -4,7 +4,7 @@ use crate::{
 };
 use last_stand_ecs::{
     component::{Component, pool::ComponentPool},
-    world::Entity,
+    entity::registry::Entity,
 };
 use macroquad::{
     camera::{Camera2D, set_camera, set_default_camera},

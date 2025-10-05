@@ -2,7 +2,7 @@ use nonmax::NonMaxU16;
 
 use crate::{
     component::pool::iter::{Entities, Iter, IterMut, Values, ValuesMut},
-    world::Entity,
+    entity::registry::Entity,
 };
 
 pub mod iter;
@@ -21,7 +21,7 @@ impl<T> ComponentPool<T> {
     pub fn new() -> Self {
         let values = Vec::with_capacity(Self::MIN_CAPACITY);
         let entities = Vec::with_capacity(Self::MIN_CAPACITY);
-        let index_lookup = vec![None; Entity::INDEX_MAX + 1].into_boxed_slice();
+        let index_lookup = vec![None; Entity::INDEX_COUNT].into_boxed_slice();
         Self {
             values,
             entities,

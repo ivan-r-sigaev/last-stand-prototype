@@ -7,7 +7,7 @@ use crate::{
     rendering::{Sprite, SpriteSource},
     transform::Transform,
 };
-use last_stand_ecs::{component::Component, world::Entity};
+use last_stand_ecs::{component::Component, entity::registry::Entity};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Director {

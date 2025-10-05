@@ -5,7 +5,7 @@ use macroquad::math::{Circle, Rect, Vec2};
 use crate::transform::Transform;
 use last_stand_ecs::{
     component::{Component, pool::ComponentPool},
-    world::Entity,
+    entity::registry::Entity,
 };
 
 /// A mask determining the layer within collision system.

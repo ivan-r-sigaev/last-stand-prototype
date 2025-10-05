@@ -1,7 +1,7 @@
+use last_stand_ecs::entity::registry::Entity;
 use macroquad::math::Vec2;
 
 use crate::player::attributes::{Attr, Attrs};
-use last_stand_ecs::world::Entity;
 
 #[derive(Debug, Clone, Copy)]
 pub struct DamageModifier {

@@ -24,7 +24,7 @@ use crate::{
     rendering::{Screen, Sprite, SpriteSource},
     transform::Transform,
 };
-use last_stand_ecs::world::World;
+use last_stand_ecs::entity::World;
 
 pub mod bullet;
 pub mod collision;

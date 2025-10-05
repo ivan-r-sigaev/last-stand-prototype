@@ -1,3 +1,4 @@
+use last_stand_ecs::entity::registry::Entity;
 use macroquad::{math::Vec2, rand::gen_range, time::get_time};
 
 use crate::{
@@ -14,7 +15,6 @@ use crate::{
     rendering::{Sprite, SpriteSource},
     transform::Transform,
 };
-use last_stand_ecs::world::Entity;
 
 pub mod attributes;
 pub mod exp;
