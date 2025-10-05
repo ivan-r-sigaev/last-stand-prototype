@@ -152,10 +152,17 @@ dependencies = [
 name = "last_stand"
 version = "0.1.0"
 dependencies = [
+ "last_stand_ecs",
  "macroquad",
+ "strum",
+]
+
+[[package]]
+name = "last_stand_ecs"
+version = "0.1.0"
+dependencies = [
  "nonmax",
  "rand_chacha",
- "strum",
 ]
 
 [[package]]

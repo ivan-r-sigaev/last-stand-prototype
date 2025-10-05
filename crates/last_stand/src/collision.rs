@@ -2,12 +2,10 @@ use std::ops::Range;
 
 use macroquad::math::{Circle, Rect, Vec2};
 
-use crate::{
-    ecs::{
-        component::{Component, pool::ComponentPool},
-        world::Entity,
-    },
-    game::transform::Transform,
+use crate::transform::Transform;
+use last_stand_ecs::{
+    component::{Component, pool::ComponentPool},
+    world::Entity,
 };
 
 /// A mask determining the layer within collision system.

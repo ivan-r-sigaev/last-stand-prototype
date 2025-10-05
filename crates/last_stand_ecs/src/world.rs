@@ -1,5 +1,5 @@
 use std::{
-    any::{Any, TypeId},
+    any::Any,
     cell::{Ref, RefCell, RefMut},
     collections::{HashMap, VecDeque, hash_map::Entry},
     marker::PhantomData,
@@ -7,9 +7,8 @@ use std::{
 };
 
 use nonmax::NonMaxU16;
-use rand_chacha::{ChaCha20Rng, rand_core::SeedableRng};
 
-use crate::ecs::component::{
+use crate::component::{
     Component,
     pool::{ComponentPool, untyped::UntypedComponentPool},
     registry::{ComponentId, ComponentRegistry},
@@ -24,16 +23,16 @@ pub struct Entity {
 
 impl Entity {
     /// Returns the maximal index of the entity.
-    pub(in crate::ecs) const INDEX_MAX: usize = NonMaxU16::MAX.get() as usize;
+    pub(crate) const INDEX_MAX: usize = NonMaxU16::MAX.get() as usize;
 
     /// Returns the index of the entity.
-    pub(in crate::ecs) fn index(self) -> NonMaxU16 {
+    pub(crate) fn index(self) -> NonMaxU16 {
         self.index
     }
-    /// Returns the generation of the entity.
-    pub(in crate::ecs) fn generation(self) -> NonMaxU16 {
-        self.generation
-    }
+    // /// Returns the generation of the entity.
+    // pub(crate) fn generation(self) -> NonMaxU16 {
+    //     self.generation
+    // }
 }
 
 /// A registry storing the state of entities and their components.
@@ -128,6 +127,12 @@ impl World {
             record.generation = NonMaxU16::new(generation).unwrap();
             self.free_indices.push_front(entity.index);
         }
+    }
+}
+
+impl Default for World {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

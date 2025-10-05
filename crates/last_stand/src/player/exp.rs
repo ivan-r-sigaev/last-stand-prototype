@@ -1,4 +1,4 @@
-use crate::ecs::component::Component;
+use last_stand_ecs::component::Component;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Exp(pub u32);

@@ -1,10 +1,10 @@
 use macroquad::math::{Rect, Vec2};
 
 use crate::{
-    Context, FIXED_DELTA,
-    ecs::component::Component,
-    game::{collision::Collider, enemy::Enemy, hp::Hp, rendering::Sprite, transform::Transform},
+    Context, FIXED_DELTA, collision::Collider, enemy::Enemy, hp::Hp, rendering::Sprite,
+    transform::Transform,
 };
+use last_stand_ecs::component::Component;
 
 pub struct Bullet {
     pub damage: u32,

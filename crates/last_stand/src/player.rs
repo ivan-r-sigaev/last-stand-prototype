@@ -2,21 +2,19 @@ use macroquad::{math::Vec2, rand::gen_range, time::get_time};
 
 use crate::{
     Context,
-    ecs::world::Entity,
-    game::{
-        bullet::Bullet,
-        collision::{Collider, CollisionMask, Shape},
-        enemy::Enemy,
-        hp::Hp,
-        player::{
-            attributes::{Attr, Attrs},
-            exp::Exp,
-            weapons::{Weapon, WeaponBase, weapon_offset},
-        },
-        rendering::{Sprite, SpriteSource},
-        transform::Transform,
+    bullet::Bullet,
+    collision::{Collider, CollisionMask, Shape},
+    enemy::Enemy,
+    hp::Hp,
+    player::{
+        attributes::{Attr, Attrs},
+        exp::Exp,
+        weapons::{Weapon, WeaponBase, weapon_offset},
     },
+    rendering::{Sprite, SpriteSource},
+    transform::Transform,
 };
+use last_stand_ecs::world::Entity;
 
 pub mod attributes;
 pub mod exp;

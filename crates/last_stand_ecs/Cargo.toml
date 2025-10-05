@@ -1,0 +1,8 @@
+[package]
+name = "last_stand_ecs"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+nonmax = "0.5.5"
+rand_chacha = { version = "0.9.0", features = ["os_rng"] }

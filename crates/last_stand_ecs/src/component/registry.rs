@@ -4,22 +4,22 @@ use rand_chacha::{
 };
 use std::{any::TypeId, collections::HashMap, fmt};
 
-use crate::ecs::component::Component;
+use crate::component::Component;
 
 #[derive(Debug, Clone)]
-pub(in crate::ecs) struct ComponentRegistry {
+pub(crate) struct ComponentRegistry {
     rng: ChaCha20Rng,
     remap: HashMap<TypeId, ComponentId>,
 }
 
 impl ComponentRegistry {
-    pub(in crate::ecs) fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Self {
             rng: ChaCha20Rng::from_os_rng(),
             remap: Default::default(),
         }
     }
-    pub(in crate::ecs) fn register<T: Component>(&mut self) -> ComponentId {
+    pub(crate) fn register<T: Component>(&mut self) -> ComponentId {
         if let Some(id) = self.id::<T>() {
             return id;
         }
@@ -32,7 +32,7 @@ impl ComponentRegistry {
         self.remap.insert(TypeId::of::<T>(), id);
         id
     }
-    pub(in crate::ecs) fn id<T: Component>(&self) -> Option<ComponentId> {
+    pub(crate) fn id<T: Component>(&self) -> Option<ComponentId> {
         self.remap.get(&TypeId::of::<T>()).copied()
     }
 }

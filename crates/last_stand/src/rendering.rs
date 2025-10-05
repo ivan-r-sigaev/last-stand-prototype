@@ -1,12 +1,10 @@
 use crate::{
-    ecs::{
-        component::{Component, pool::ComponentPool},
-        world::Entity,
-    },
-    game::{
-        collision::{Collider, Shape},
-        transform::Transform,
-    },
+    collision::{Collider, Shape},
+    transform::Transform,
+};
+use last_stand_ecs::{
+    component::{Component, pool::ComponentPool},
+    world::Entity,
 };
 use macroquad::{
     camera::{Camera2D, set_camera, set_default_camera},

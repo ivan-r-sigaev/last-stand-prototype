@@ -1,9 +1,7 @@
 use macroquad::math::Vec2;
 
-use crate::{
-    ecs::world::Entity,
-    game::player::attributes::{Attr, Attrs},
-};
+use crate::player::attributes::{Attr, Attrs};
+use last_stand_ecs::world::Entity;
 
 #[derive(Debug, Clone, Copy)]
 pub struct DamageModifier {

@@ -1,12 +1,7 @@
-use std::any::Any;
-
 use nonmax::NonMaxU16;
 
-use crate::ecs::{
-    component::{
-        Component,
-        pool::iter::{Entities, Iter, IterMut, Values, ValuesMut},
-    },
+use crate::{
+    component::pool::iter::{Entities, Iter, IterMut, Values, ValuesMut},
     world::Entity,
 };
 
@@ -102,6 +97,10 @@ impl<T> ComponentPool<T> {
     pub fn len(&self) -> usize {
         self.entities.len()
     }
+    /// Returns `true` if there are no components in the pool.
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
     /// Minimal capacity of the component pool's vectors.
     ///
     /// Sparse array already uses 128 Kib per component pool, so
@@ -142,5 +141,11 @@ impl<T> ComponentPool<T> {
     /// Returns the index in the component array for the supplied enity.
     fn index(&self, entity: Entity) -> Option<usize> {
         self.index_lookup[entity.index().get() as usize].map(|index| index.get() as usize)
+    }
+}
+
+impl<T> Default for ComponentPool<T> {
+    fn default() -> Self {
+        Self::new()
     }
 }

@@ -2,14 +2,12 @@ use macroquad::{math::Vec2, rand::gen_range, time::get_time};
 
 use crate::{
     Context, FIXED_DELTA,
-    ecs::{component::Component, world::Entity},
-    game::{
-        collision::{Collider, CollisionMask, Shape},
-        hp::Hp,
-        rendering::{Sprite, SpriteSource},
-        transform::Transform,
-    },
+    collision::{Collider, CollisionMask, Shape},
+    hp::Hp,
+    rendering::{Sprite, SpriteSource},
+    transform::Transform,
 };
+use last_stand_ecs::{component::Component, world::Entity};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Director {
@@ -96,7 +94,7 @@ pub fn move_enemies(context: &Context) {
     let mut transforms = context.world.borrow_pool_mut::<Transform>();
     let player_transform = transforms.get(context.player.entity).unwrap();
     let pos = player_transform.position;
-    for (entity, enemy) in enemies.iter() {
+    for entity in enemies.entities() {
         let transform = transforms.get_mut(entity).unwrap();
         let delta = (pos - transform.position).normalize_or_zero() * WALK_SPEED * FIXED_DELTA;
         transform.position.x += delta.x;

@@ -1,6 +1,6 @@
 use std::any::Any;
 
-use crate::ecs::{
+use crate::{
     component::{
         Component,
         pool::{ComponentPool, iter::Entities},

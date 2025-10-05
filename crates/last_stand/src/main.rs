@@ -9,29 +9,31 @@ use macroquad::{
 };
 
 use crate::{
-    ecs::world::World,
-    game::{
-        bullet::{Bullet, move_bullets, test_bullet_collision},
-        collision::{Collider, CollisionGrid, CollisionGridParams, CollisionMask, Shape},
-        enemy::{Director, Enemy, enemy_contact_damage, move_enemies, unalive_enemies},
-        hp::Hp,
-        movement::MapConstraints,
-        player::{
-            Player,
-            attributes::{Attr, Attrs},
-            exp::Exp,
-            is_player_dead, player_autoattack, player_move,
-            weapons::{DamageModifier, Weapon, WeaponBase, weapon_offset},
-        },
-        rendering::{Screen, Sprite, SpriteSource},
-        transform::Transform,
+    bullet::{Bullet, move_bullets, test_bullet_collision},
+    collision::{Collider, CollisionGrid, CollisionGridParams, CollisionMask, Shape},
+    enemy::{Director, Enemy, enemy_contact_damage, move_enemies, unalive_enemies},
+    hp::Hp,
+    movement::MapConstraints,
+    player::{
+        Player,
+        attributes::{Attr, Attrs},
+        exp::Exp,
+        is_player_dead, player_autoattack, player_move,
+        weapons::{DamageModifier, Weapon, WeaponBase, weapon_offset},
     },
+    rendering::{Screen, Sprite, SpriteSource},
+    transform::Transform,
 };
+use last_stand_ecs::world::World;
 
-#[allow(unused)]
-mod ecs;
-#[allow(unused)]
-mod game;
+pub mod bullet;
+pub mod collision;
+pub mod enemy;
+pub mod hp;
+pub mod movement;
+pub mod player;
+pub mod rendering;
+pub mod transform;
 
 const ASSET_BAKED_BG_BYTES: &[u8] = include_bytes!("../assets/BG.png");
 const ASSET_BAKED_ENEMY_BYTES: &[u8] = include_bytes!("../assets/Destructoid.png");
@@ -188,7 +190,7 @@ async fn setup_context() -> Context {
     }
 }
 
-struct Context {
+pub struct Context {
     world: World,
     screen: Screen,
     player: Player,

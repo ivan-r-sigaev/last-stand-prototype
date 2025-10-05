@@ -1,4 +1,4 @@
-use crate::ecs::component::Component;
+use last_stand_ecs::component::Component;
 use macroquad::math::Vec2;
 
 /// Determines the global position of the entity.
