@@ -1,7 +1,7 @@
 use macroquad::math::Vec2;
 
 use crate::{
-    ecs::entity::Entity,
+    ecs::world::Entity,
     game::player::attributes::{Attr, Attrs},
 };
 

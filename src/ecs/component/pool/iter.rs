@@ -1,4 +1,4 @@
-use crate::ecs::component::Entity;
+use crate::ecs::world::Entity;
 
 #[derive(Debug, Clone)]
 pub struct Values<'a, T>(pub(super) std::slice::Iter<'a, T>);

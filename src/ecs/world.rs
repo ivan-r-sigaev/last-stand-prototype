@@ -7,8 +7,13 @@ use std::{
 };
 
 use nonmax::NonMaxU16;
+use rand_chacha::{ChaCha20Rng, rand_core::SeedableRng};
 
-use crate::ecs::component::{Component, ComponentPool, UntypedComponentPool};
+use crate::ecs::component::{
+    Component,
+    pool::{ComponentPool, untyped::UntypedComponentPool},
+    registry::{ComponentId, ComponentRegistry},
+};
 
 /// ECS entity ID.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -19,21 +24,22 @@ pub struct Entity {
 
 impl Entity {
     /// Returns the maximal index of the entity.
-    pub(super) const INDEX_MAX: usize = NonMaxU16::MAX.get() as usize;
+    pub(in crate::ecs) const INDEX_MAX: usize = NonMaxU16::MAX.get() as usize;
 
     /// Returns the index of the entity.
-    pub(super) fn index(self) -> NonMaxU16 {
+    pub(in crate::ecs) fn index(self) -> NonMaxU16 {
         self.index
     }
     /// Returns the generation of the entity.
-    pub(super) fn generation(self) -> NonMaxU16 {
+    pub(in crate::ecs) fn generation(self) -> NonMaxU16 {
         self.generation
     }
 }
 
 /// A registry storing the state of entities and their components.
 pub struct World {
-    components: HashMap<TypeId, Box<RefCell<dyn UntypedComponentPool>>>,
+    component_registry: ComponentRegistry,
+    components: HashMap<ComponentId, Box<RefCell<dyn UntypedComponentPool>>>,
     record_lookup: Box<[EntityRecord]>,
     free_indices: VecDeque<NonMaxU16>,
 }
@@ -41,12 +47,14 @@ pub struct World {
 impl World {
     /// Creates a new entity registry.
     pub fn new() -> Self {
+        let component_registry = ComponentRegistry::new();
         let components = HashMap::new();
         let record_lookup = vec![EntityRecord::default(); Entity::INDEX_MAX + 1].into_boxed_slice();
         let free_indices = VecDeque::from_iter(
             (0..=Entity::INDEX_MAX).map(|index| NonMaxU16::new(index as u16).unwrap()),
         );
         Self {
+            component_registry,
             components,
             record_lookup,
             free_indices,
@@ -54,7 +62,7 @@ impl World {
     }
     /// Registers the specified type as a component.
     pub fn register_type<T: Component>(&mut self) {
-        let id = TypeId::of::<T>();
+        let id = self.component_registry.register::<T>();
         let Entry::Vacant(entry) = self.components.entry(id) else {
             return;
         };
@@ -62,7 +70,10 @@ impl World {
     }
     /// Returns the untyped component pool handle for the specified type.
     pub fn get_untyped_pool_handle<T: Component>(&self) -> &RefCell<dyn UntypedComponentPool> {
-        self.components.get(&TypeId::of::<T>()).unwrap().as_ref()
+        self.components
+            .get(&self.component_registry.id::<T>().unwrap())
+            .unwrap()
+            .as_ref()
     }
     /// Returns the reference to the component pool for the specified type.
     pub fn borrow_pool<T: Component>(&self) -> ComponentPoolGuard<'_, T> {

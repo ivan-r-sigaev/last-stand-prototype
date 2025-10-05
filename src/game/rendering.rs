@@ -1,7 +1,7 @@
 use crate::{
     ecs::{
-        component::{Component, ComponentPool},
-        entity::Entity,
+        component::{Component, pool::ComponentPool},
+        world::Entity,
     },
     game::{
         collision::{Collider, Shape},

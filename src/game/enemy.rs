@@ -2,7 +2,7 @@ use macroquad::{math::Vec2, rand::gen_range, time::get_time};
 
 use crate::{
     Context, FIXED_DELTA,
-    ecs::{component::Component, entity::Entity},
+    ecs::{component::Component, world::Entity},
     game::{
         collision::{Collider, CollisionMask, Shape},
         hp::Hp,

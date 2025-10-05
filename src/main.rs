@@ -9,7 +9,7 @@ use macroquad::{
 };
 
 use crate::{
-    ecs::entity::World,
+    ecs::world::World,
     game::{
         bullet::{Bullet, move_bullets, test_bullet_collision},
         collision::{Collider, CollisionGrid, CollisionGridParams, CollisionMask, Shape},

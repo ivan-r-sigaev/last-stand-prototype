@@ -4,8 +4,8 @@ use macroquad::math::{Circle, Rect, Vec2};
 
 use crate::{
     ecs::{
-        component::{Component, ComponentPool},
-        entity::Entity,
+        component::{Component, pool::ComponentPool},
+        world::Entity,
     },
     game::transform::Transform,
 };
