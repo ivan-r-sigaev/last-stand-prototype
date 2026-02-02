@@ -1,21 +1,18 @@
-use rand_chacha::{
-    ChaCha20Rng,
-    rand_core::{RngCore, SeedableRng},
-};
-use std::{any::TypeId, collections::HashMap, fmt};
+use std::{any::TypeId, array, collections::HashMap, fmt, mem::MaybeUninit};
 
 use crate::component::Component;
 
+#[derive(Debug)]
+pub struct ComponentRegistryBuilder(Vec<TypeId>);
+
 #[derive(Debug, Clone)]
 pub(crate) struct ComponentRegistry {
-    rng: ChaCha20Rng,
     remap: HashMap<TypeId, ComponentId>,
 }
 
 impl ComponentRegistry {
-    pub(crate) fn new() -> Self {
+    pub(crate) const fn new(components: &[TypeId]) -> Self {
         Self {
-            rng: ChaCha20Rng::from_os_rng(),
             remap: Default::default(),
         }
     }
@@ -44,7 +41,7 @@ impl Default for ComponentRegistry {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct ComponentId(usize);
+pub(crate) struct ComponentId(usize);
 
 impl fmt::Display for ComponentId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
